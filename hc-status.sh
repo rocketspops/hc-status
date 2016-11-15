@@ -1,13 +1,12 @@
 #!/bin/bash
 
-source ~/bin/hc-status.cfg
 trap ctrl_c INT
 
 stty -echo
 tput civis
 
-view_token=""
-email=""
+view_token="Gf641la2tp9i3gsPyppGaBQj9Ttyreh102mxLZef"
+email="billy.whited@ampf.com"
 
 icn="▯"
 x_icn="$(tput setaf 1)✘$(tput sgr0)"
