@@ -6,6 +6,9 @@ trap ctrl_c INT
 stty -echo
 tput civis
 
+view_token=""
+email=""
+
 icn="▯"
 x_icn="$(tput setaf 1)✘$(tput sgr0)"
 c_icn="$(tput bold)$(tput setaf 2)✔$(tput sgr0)"
