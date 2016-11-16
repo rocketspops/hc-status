@@ -120,7 +120,7 @@ while true; do
       "away"|"xa")
         # Set Blink1 to rgb(255,100,0)
         blink1_tool --rgb=255,100,0 --nogamma --quiet
-        print_color=$(tput setaf 208)
+        print_color=$(tput setaf 3)
         ;;
       "dnd")
         # Set Blink 1 to rgb(255,0,0)
