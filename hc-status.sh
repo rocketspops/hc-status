@@ -1,12 +1,11 @@
 #!/bin/bash
 
+source ./hc-status.cfg
+
 trap ctrl_c INT
 
 stty -echo
 tput civis
-
-view_token="Gf641la2tp9i3gsPyppGaBQj9Ttyreh102mxLZef"
-email="billy.whited@ampf.com"
 
 icn="▯"
 x_icn="$(tput setaf 1)✘$(tput sgr0)"
@@ -21,14 +20,18 @@ ctrl_c() {
     "chat"|"away"|"xa"|"dnd" ) printf "%s\n\n%s\n" "${icn}" "${msg}" ;;
     *) printf "%s\n%s\n" "${x_icn}" "${msg}" ;;
   esac
-  blink1-tool --off --quiet
+  blink1_tool --off --quiet
   tput cnorm
   stty sane
   exit 1
 }
 
+blink1_tool() {
+  ./deps/${os}/blink1-tool $1 $2 $3
+}
+
 blink1_detect() {
-  blink1-tool --list | grep -q "id:[0-9]\+"
+  blink1_tool --list | grep -q "id:[0-9]\+"
   blink1_detected=$(echo $?)
 }
 
@@ -46,6 +49,10 @@ get_user() {
   user_current_status=$(echo ${user} | jq -r ".presence.show")
   user_last_active=$(echo ${user} | jq -r ".last_active")
   user_client_type=$(echo ${user} | jq -r ".presence.client.type")
+}
+
+jq() {
+  ./deps/${os}/jq $1 $2 $3
 }
 
 while true; do
@@ -81,7 +88,7 @@ while true; do
         *) printf "%s" "${msg}" ;;
       esac
     fi
-    blink1-tool --off --quiet
+    blink1_tool --off --quiet
     get_user
     export iteration=0
     export last_status="offline"
@@ -92,7 +99,7 @@ while true; do
 
   if [ "${iteration}" == 0 ]; then
     printf "%s\n\n" "$(tput bold)Establishing connection to HipChat API...$(tput setaf 2)✔$(tput sgr0)"
-    printf "%-15s%s\n" "Blink1:" "$(blink1-tool --list | grep 'id:[0-9]\+')"
+    printf "%-15s%s\n" "Blink1:" "$(blink1_tool --list | grep 'id:[0-9]\+')"
     printf "%-15s%s\n" "User:" "${user_name}"
     printf "%-15s%s\n" "Title:" "${user_title}"
     printf "%-15s%s\n" "Last Active:" "${user_last_active}"
@@ -107,17 +114,17 @@ while true; do
     case ${user_current_status} in
       "chat")
         # Set Blink1 to rgb(0,255,0)
-        blink1-tool --rgb=0,255,0 --nogamma --quiet
+        blink1_tool --rgb=0,255,0 --nogamma --quiet
         print_color=$(tput setaf 2)
         ;;
       "away"|"xa")
         # Set Blink1 to rgb(255,100,0)
-        blink1-tool --rgb=255,100,0 --nogamma --quiet
+        blink1_tool --rgb=255,100,0 --nogamma --quiet
         print_color=$(tput setaf 208)
         ;;
       "dnd")
         # Set Blink 1 to rgb(255,0,0)
-        blink1-tool --rgb=255,0,0 --nogamma --quiet
+        blink1_tool --rgb=255,0,0 --nogamma --quiet
         print_color=$(tput setaf 1)
         ;;
     esac
