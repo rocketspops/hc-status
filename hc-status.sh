@@ -58,7 +58,6 @@ jq() {
 while true; do
 
   blink1_detect
-  get_user
 
   until [ "${blink1_detected}" == 0 ]; do
     if [ "${last_status}" != "blinkless" ]; then
@@ -76,6 +75,8 @@ while true; do
 
   if [ "${last_status}" == "blinkless" ]; then printf "%s\n" "${c_icn}"; fi
 
+  get_user
+  
   until [ "${user_presence}" == "true" ]; do
     blink1_detect
     if [ "${blink1_detected}" != 0 ]; then
