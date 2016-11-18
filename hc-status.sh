@@ -7,7 +7,6 @@ trap ctrl_c INT
 stty -echo
 tput civis
 
-icn="▯"
 x_icn="$(tput setaf 1)✘$(tput sgr0)"
 c_icn="$(tput bold)$(tput setaf 2)✔$(tput sgr0)"
 
@@ -17,7 +16,7 @@ last_status="null"
 ctrl_c() {
   msg="$(tput bold)Disconnecting...$(tput setaf 2)✔$(tput sgr0)"
   case ${last_status} in
-    "chat"|"away"|"xa"|"dnd" ) printf "%s\n\n%s\n" "${icn}" "${msg}" ;;
+    "chat"|"away"|"xa"|"dnd" ) printf "%s\n\n%s\n" "${status_icn}" "${msg}" ;;
     *) printf "%s\n%s\n" "${x_icn}" "${msg}" ;;
   esac
   blink1_tool --off --quiet
@@ -63,7 +62,7 @@ while true; do
     if [ "${last_status}" != "blinkless" ]; then
       msg="$(tput bold)Connect a Blink1 device to continue...$(tput sgr0)"
       case ${last_status} in
-        "chat"|"away"|"xa"|"dnd" ) printf "%s\n\n%s" "${icn}" "${msg}" ;;
+        "chat"|"away"|"xa"|"dnd" ) printf "%s\n\n%s" "${status_icn}" "${msg}" ;;
         *) printf "%s" "${msg}" ;;
       esac
     fi
@@ -76,7 +75,7 @@ while true; do
   if [ "${last_status}" == "blinkless" ]; then printf "%s\n" "${c_icn}"; fi
 
   get_user
-  
+
   until [ "${user_presence}" == "true" ]; do
     blink1_detect
     if [ "${blink1_detected}" != 0 ]; then
@@ -85,7 +84,7 @@ while true; do
     elif [ "${last_status}" != "offline" ]; then
       msg="$(tput bold)Log into HipChat to continue...$(tput sgr0)"
       case ${last_status} in
-        "chat"|"away"|"xa"|"dnd" ) printf "%s\n\n%s" "${icn}" "${msg}" ;;
+        "chat"|"away"|"xa"|"dnd" ) printf "%s\n\n%s" "${status_icn}" "${msg}" ;;
         *) printf "%s" "${msg}" ;;
       esac
     fi
@@ -106,7 +105,7 @@ while true; do
     printf "%-15s%s\n" "Last Active:" "${user_last_active}"
     printf "%-15s%s\n" "Client:" "${user_client_type}"
     printf "%-15s" "Status:"
-  elif [ "${iteration}" == 40 ]; then
+  elif [ "${iteration}" == ${status_chars} ]; then
     printf "\n%-15s"
     export iteration=0
   fi
